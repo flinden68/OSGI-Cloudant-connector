@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Cloudant connector
+Bundle-SymbolicName: nl.elstarit.cloudant;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: nl.elstarit.cloudant.Activator
+Bundle-Vendor: elstar IT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.apache.commons.httpclient;version="3.0.0",
+ org.osgi.framework
+Bundle-ActivationPolicy: lazy
+Require-Bundle: com.ibm.commons;bundle-version="9.0.1",
+ com.ibm.xsp.core;bundle-version="9.0.1"
+Export-Package: com.cloudant.client.api,
+ com.cloudant.client.api.model,
+ com.cloudant.client.api.views,
+ com.cloudant.client.internal,
+ com.cloudant.client.internal.util,
+ com.cloudant.client.internal.views,
+ com.cloudant.client.org.lightcouch,
+ com.cloudant.client.org.lightcouch.internal,
+ com.cloudant.library,
+ nl.elstarit.cloudant,
+ nl.elstarit.cloudant.connector
+Bundle-ClassPath: .,
+ lib/org.ektorp.spring-1.4.0.jar
