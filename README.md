@@ -42,13 +42,20 @@ connector.deleteDb(String dbName);
 #CRUD for bulk documents from a List of POJO's
 
 connector.createBulk(List<Object> objects);
+
 connector.updateBulk(List<Object> objects);
+
 connector.deleteBulk(List<Object> objects);
+
 List<Object> list = connector.findAllDocuments(Object.class);
+
 List<Object> list = connector.findAllDocumentIds();
 
 #CRUD single document
 connector.save(final Object obj);
+
 connector.delete(final Object obj);
+
 connector.update(final Object obj);
+
 Object obj = connector.find(final Class<?> cls, final String id);
