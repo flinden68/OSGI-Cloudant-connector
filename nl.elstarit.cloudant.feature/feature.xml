@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="nl.elstarit.cloudant.feature"
+      label="Feature of Cloudant Connector plugin"
+      version="1.0.0.qualifier"
+      provider-name="elstar IT">
+
+   <description url="https://github.com/cloudant/java-cloudant">
+      Java project to connect to Cloudant database
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="https://github.com/cloudant/java-cloudant#license">
+      License
+
+Copyright 2014-2015 Cloudant, an IBM company.
+
+Licensed under the apache license, version 2.0 (the &quot;license&quot;); you may not use this file except in compliance with the license. you may obtain a copy of the license at
+
+http://www.apache.org/licenses/LICENSE-2.0.html
+Unless required by applicable law or agreed to in writing, software distributed under the license is distributed on an &quot;as is&quot; basis, without warranties or conditions of any kind, either express or implied. See the license for the specific language governing permissions and limitations under the license.
+   </license>
+
+   <plugin
+         id="nl.elstarit.cloudant"
+         download-size="0"
+         install-size="0"
+         version="1.0.0.qualifier"
+         unpack="false"/>
+
+</feature>

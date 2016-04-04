@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config>
+<!-- Managed bean -->
+  <managed-bean id="CloudantConnector">
+    <managed-bean-name>CloudantConnector</managed-bean-name>
+    <managed-bean-class>nl.elstarit.cloudant.connector.CloudantConnector</managed-bean-class>
+    <managed-bean-scope>application</managed-bean-scope>
+  </managed-bean>
+ 
+</faces-config>
