@@ -1,4 +1,6 @@
-package nl.elstarit.cloudant;
+package nl.elstarit.cloudant.library;
+
+import nl.elstarit.cloudant.Activator;
 
 import com.ibm.xsp.library.AbstractXspLibrary;
 
