@@ -32,14 +32,14 @@ public class XspLibrary extends AbstractXspLibrary {
 
 	@Override
 	public String[] getXspConfigFiles() {
-		final String[] files = new String[] { "META-INF/elstar.xsp-config"};
+		final String[] files = new String[] { "META-INF/cloudant.xsp-config"};
 
 		return files;
 	}
 
 	@Override
 	public String[] getFacesConfigFiles() {
-		final String[] files = new String[] { "META-INF/elstar-faces-config.xml"};
+		final String[] files = new String[] { "META-INF/cloudant-faces-config.xml"};
 		return files;
 	}
 
