@@ -21,17 +21,6 @@ public class DatabaseConnector {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void switchDatabase(final CloudantClient client, final String dbName, final boolean create) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DatabaseConnector.this.switchDatabaseImpl(client, dbName, create);
-				return null;
-			}
-		});
-	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void initDatabase(final CloudantClient client, final String dbName, final boolean create) throws PrivilegedActionException{
 		AccessController.doPrivileged(new PrivilegedExceptionAction() {
 			@Override
@@ -80,11 +69,6 @@ public class DatabaseConnector {
 	/*
 	 * Impl methods
 	 */
-
-	private void switchDatabaseImpl(final CloudantClient client, final String dbName, final boolean create){
-		db = client.database(dbName, create);
-	}
-
 	private void initDatabaseImpl(final CloudantClient client, final String dbName, final boolean create){
 		db = client.database(dbName, create);
 	}

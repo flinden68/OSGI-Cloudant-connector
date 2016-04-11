@@ -20,7 +20,10 @@ public class CloudantConnector {
 
 	public CloudantConnector(final String account, final String username, final String password,final String dbName, final boolean create) throws PrivilegedActionException{
 		initCloudantClient(account, username, password);
-		initCloudantDatabase(dbName, create);
+
+		if(dbName != null || !"".equals(dbName)){
+			initCloudantDatabase(dbName, create);
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -50,6 +53,20 @@ public class CloudantConnector {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void switchDatabase(final CloudantClient client, final String dbName, final boolean create) throws PrivilegedActionException{
+		AccessController.doPrivileged(new PrivilegedExceptionAction() {
+			@Override
+			public Object run() throws Exception {
+				CloudantConnector.this.switchDatabaseImpl(client, dbName, create);
+				return null;
+			}
+		});
+	}
+
+	private void switchDatabaseImpl(final CloudantClient client, final String dbName, final boolean create){
+		databaseConnector.setDb(client.database(dbName, create));
+	}
 
 	private void cloudantClientImpl(final String account, final String username, final String password){
 		if(!isConnectedToCloudant()){
