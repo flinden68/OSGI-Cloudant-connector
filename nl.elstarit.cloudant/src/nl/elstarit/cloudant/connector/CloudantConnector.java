@@ -21,9 +21,10 @@ public class CloudantConnector {
 	public CloudantConnector(final String account, final String username, final String password,final String dbName, final boolean create) throws PrivilegedActionException{
 		initCloudantClient(account, username, password);
 
-		if(dbName != null || !"".equals(dbName)){
-			initCloudantDatabase(dbName, create);
-		}
+		//if(dbName != null || !"".equals(dbName)){
+		initCloudantDatabaseConnector(dbName, create);
+		initCloudantDocumentConnector();
+		//}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -37,7 +38,7 @@ public class CloudantConnector {
 		});
 	}
 
-	public void initCloudantDatabase(final String dbName, final boolean create) throws PrivilegedActionException{
+	public void initCloudantDatabaseConnector(final String dbName, final boolean create) throws PrivilegedActionException{
 		if(databaseConnector == null){
 			databaseConnector = new DatabaseConnector(client, dbName, create);
 		}
@@ -50,10 +51,11 @@ public class CloudantConnector {
 	public void initCloudantDocumentConnector(){
 		if(documentConnector == null){
 			documentConnector = new DocumentConnector();
+			documentConnector.setDb(databaseConnector.getDb());
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	/*@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void switchDatabase(final CloudantClient client, final String dbName, final boolean create) throws PrivilegedActionException{
 		AccessController.doPrivileged(new PrivilegedExceptionAction() {
 			@Override
@@ -62,10 +64,13 @@ public class CloudantConnector {
 				return null;
 			}
 		});
-	}
+	}*/
 
-	private void switchDatabaseImpl(final CloudantClient client, final String dbName, final boolean create){
+	public void switchDatabase(final CloudantClient client, final String dbName, final boolean create){
 		databaseConnector.setDb(client.database(dbName, create));
+		if(documentConnector != null){
+			documentConnector.setDb(databaseConnector.getDb());
+		}
 	}
 
 	private void cloudantClientImpl(final String account, final String username, final String password){

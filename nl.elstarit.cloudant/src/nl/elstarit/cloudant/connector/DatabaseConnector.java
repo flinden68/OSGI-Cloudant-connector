@@ -11,13 +11,14 @@ import com.cloudant.client.api.Database;
 public class DatabaseConnector {
 
 	private Database db;
+	private CloudantClient client;
 
 	private List<?> abstractList;
 
 	public DatabaseConnector(){}
 
-	public DatabaseConnector(final CloudantClient client, final String dbName, final boolean create){
-
+	public DatabaseConnector(final CloudantClient client, final String dbName, final boolean create) throws PrivilegedActionException{
+		initDatabase(client, dbName, create);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -32,33 +33,33 @@ public class DatabaseConnector {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void deleteDb(final CloudantClient client, final String dbName) throws PrivilegedActionException{
+	public void deleteDb(final String dbName) throws PrivilegedActionException{
 		AccessController.doPrivileged(new PrivilegedExceptionAction() {
 			@Override
 			public Object run() throws Exception {
-				DatabaseConnector.this.deleteDbImpl(client, dbName);
+				DatabaseConnector.this.deleteDbImpl(dbName);
 				return null;
 			}
 		});
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void createDb(final CloudantClient client,final String dbName) throws PrivilegedActionException{
+	public void createDb(final String dbName) throws PrivilegedActionException{
 		AccessController.doPrivileged(new PrivilegedExceptionAction() {
 			@Override
 			public Object run() throws Exception {
-				DatabaseConnector.this.createDbImpl(client, dbName);
+				DatabaseConnector.this.createDbImpl(dbName);
 				return null;
 			}
 		});
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<?> findAllDatabases(final CloudantClient client) throws PrivilegedActionException{
+	public List<?> findAllDatabases() throws PrivilegedActionException{
 		AccessController.doPrivileged(new PrivilegedExceptionAction() {
 			@Override
 			public Object run() throws Exception {
-				DatabaseConnector.this.findAllDatabasesImpl(client);
+				DatabaseConnector.this.findAllDatabasesImpl();
 				return null;
 			}
 		});
@@ -66,22 +67,27 @@ public class DatabaseConnector {
 		return abstractList;
 	}
 
+	private void setCLient(final CloudantClient client){
+		this.client = client;
+	}
+
 	/*
 	 * Impl methods
 	 */
 	private void initDatabaseImpl(final CloudantClient client, final String dbName, final boolean create){
+		setCLient(client);
 		db = client.database(dbName, create);
 	}
 
-	private void findAllDatabasesImpl(final CloudantClient client){
+	private void findAllDatabasesImpl(){
 		abstractList = client.getAllDbs();
 	}
 
-	private void deleteDbImpl(final CloudantClient client,final String dbName){
+	private void deleteDbImpl(final String dbName){
 		client.deleteDB(dbName);
 	}
 
-	private void createDbImpl(final CloudantClient client,final String dbName){
+	private void createDbImpl(final String dbName){
 		client.createDB(dbName);
 	}
 	/*

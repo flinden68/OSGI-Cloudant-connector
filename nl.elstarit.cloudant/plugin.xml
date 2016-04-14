@@ -4,7 +4,7 @@
    <extension
          point="com.ibm.commons.Extension">
       <service
-            class="nl.elstarit.cloudant.XspLibrary"
+            class="nl.elstarit.cloudant.library.XspLibrary"
             type="com.ibm.xsp.Library">
       </service>
    </extension>
