@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import nl.elstarit.cloudant.log.CloudantLogger;
 
 import com.cloudant.client.api.CloudantClient;
-import com.cloudant.client.api.Database;
 
 /**
  * <pre>
@@ -22,11 +21,8 @@ import com.cloudant.client.api.Database;
  * @author frank van der linden
  */
 
-public class DatabaseConnector {
-	private Database db;
+public class DatabaseConnector extends BaseConnector {
 	private CloudantClient client;
-
-	private List<?> abstractList;
 
 	public DatabaseConnector(){}
 
@@ -93,7 +89,7 @@ public class DatabaseConnector {
 			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
-		return abstractList;
+		return getAbstractList();
 	}
 
 	private void setCLient(final CloudantClient client){
@@ -105,11 +101,11 @@ public class DatabaseConnector {
 	 */
 	private void initDatabaseImpl(final CloudantClient client, final String dbName, final boolean create){
 		setCLient(client);
-		db = client.database(dbName, create);
+		setDb(client.database(dbName, create));
 	}
 
 	private void findAllDatabasesImpl(){
-		abstractList = client.getAllDbs();
+		setAbstractList(client.getAllDbs());
 	}
 
 	private void deleteDbImpl(final String dbName){
@@ -118,18 +114,6 @@ public class DatabaseConnector {
 
 	private void createDbImpl(final String dbName){
 		client.createDB(dbName);
-	}
-
-	/*
-	 * Getters and Setters
-	 */
-
-	public Database getDb() {
-		return db;
-	}
-
-	public void setDb(final Database db) {
-		this.db = db;
 	}
 
 }

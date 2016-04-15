@@ -4,7 +4,6 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import nl.elstarit.cloudant.log.CloudantLogger;
 
@@ -22,10 +21,11 @@ import com.cloudant.client.api.CloudantClient;
  * @author frank van der linden
  */
 public class CloudantConnector {
-	private final static Logger LOGGER = Logger.getLogger(CloudantConnector.class.getName());
+
 	private CloudantClient client;
 	private DatabaseConnector databaseConnector;
 	private DocumentConnector documentConnector;
+	private QueryConnector queryConnector;
 
 	/**
 	 *
@@ -40,6 +40,7 @@ public class CloudantConnector {
 
 		initCloudantDatabaseConnector(dbName, create);
 		initCloudantDocumentConnector();
+		initCloudantQueryConnector();
 	}
 
 	/**
@@ -89,6 +90,13 @@ public class CloudantConnector {
 		}
 	}
 
+	public void initCloudantQueryConnector(){
+		if(queryConnector == null){
+			queryConnector = new QueryConnector();
+			queryConnector.setDb(databaseConnector.getDb());
+		}
+	}
+
 	/**
 	 *
 	 * @param dbName
@@ -98,6 +106,10 @@ public class CloudantConnector {
 		databaseConnector.setDb(client.database(dbName, create));
 		if(documentConnector != null){
 			documentConnector.setDb(databaseConnector.getDb());
+		}
+
+		if(queryConnector != null){
+			queryConnector.setDb(databaseConnector.getDb());
 		}
 	}
 
@@ -127,6 +139,14 @@ public class CloudantConnector {
 
 	public void setDocumentConnector(final DocumentConnector documentConnector) {
 		this.documentConnector = documentConnector;
+	}
+
+	public QueryConnector getQueryConnector() {
+		return queryConnector;
+	}
+
+	public void setQueryConnector(final QueryConnector queryConnector) {
+		this.queryConnector = queryConnector;
 	}
 
 }

@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import nl.elstarit.cloudant.log.CloudantLogger;
 import nl.elstarit.cloudant.model.ConnectorResponse;
 
-import com.cloudant.client.api.Database;
 import com.cloudant.client.api.model.Response;
 
 /**
@@ -19,11 +18,7 @@ import com.cloudant.client.api.model.Response;
  *
  */
 
-public class DocumentConnector {
-	private Object clazz = null;
-	private ConnectorResponse connectorResponse = null;
-	private List<?> abstractList;
-	private Database db;
+public class DocumentConnector extends BaseConnector {
 
 	public DocumentConnector(){}
 
@@ -104,7 +99,7 @@ public class DocumentConnector {
 			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
-		return clazz;
+		return getClazz();
 	}
 
 	/**
@@ -183,7 +178,7 @@ public class DocumentConnector {
 			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
-		return abstractList;
+		return getAbstractList();
 	}
 
 	/**
@@ -206,7 +201,7 @@ public class DocumentConnector {
 			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
-		return abstractList;
+		return getAbstractList();
 	}
 
 	/**
@@ -228,7 +223,7 @@ public class DocumentConnector {
 			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
-		return abstractList;
+		return getAbstractList();
 	}
 
 	/**
@@ -254,7 +249,7 @@ public class DocumentConnector {
 			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
-		return connectorResponse;
+		return getConnectorResponse();
 	}
 
 	/*
@@ -262,39 +257,39 @@ public class DocumentConnector {
 	 */
 
 	private void saveImpl(final Object obj){
-		db.save(obj);
+		getDb().save(obj);
 	}
 
 	private void updateImpl(final Object obj){
-		db.update(obj);
+		getDb().update(obj);
 	}
 
 	private void removeImpl(final Object obj){
-		db.remove(obj);
+		getDb().remove(obj);
 	}
 
 	private void findImpl(final Class<?> cls, final String id){
-		clazz = db.find(cls, id);
+		setClazz(getDb().find(cls, id));
 	}
 
 	private void updateBulkImpl(final List<?> list){
-		db.bulk(list);
+		getDb().bulk(list);
 	}
 
 	private void createBulkImpl(final List<?> list){
-		db.bulk(list);
+		getDb().bulk(list);
 	}
 
 	private void removeBulkImpl(final List<?> list){
 		for(final Object obj : list){
 
-			db.remove(obj);
+			getDb().remove(obj);
 		}
 	}
 
 	private void findAllDocumentsImpl(final Class<?> cls){
 		try {
-			abstractList = db.getAllDocsRequestBuilder().includeDocs(true).build().getResponse().getDocsAs(cls);
+			setAbstractList(getDb().getAllDocsRequestBuilder().includeDocs(true).build().getResponse().getDocsAs(cls));
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -302,7 +297,7 @@ public class DocumentConnector {
 
 	private void findAllDocumentIdsImpl(){
 		try {
-			abstractList = db.getAllDocsRequestBuilder().build().getResponse().getDocIds();
+			setAbstractList(getDb().getAllDocsRequestBuilder().build().getResponse().getDocIds());
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -310,7 +305,7 @@ public class DocumentConnector {
 
 	private void findAllDocumentsByIdImpl(final Class<?> cls, final String[] docIds){
 		try {
-			abstractList = db.getAllDocsRequestBuilder().keys(docIds).includeDocs(true).build().getResponse().getDocsAs(cls);
+			setAbstractList(getDb().getAllDocsRequestBuilder().keys(docIds).includeDocs(true).build().getResponse().getDocsAs(cls));
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -319,23 +314,16 @@ public class DocumentConnector {
 	private void saveAttachmentImpl(final InputStream inputStream, final String name, final String contentType, final String docId, final String docRev){
 		Response response = null;
 		if(docId != null || docRev != null){
-			response = db.saveAttachment(inputStream, name, contentType, docId, docRev);
+			response = getDb().saveAttachment(inputStream, name, contentType, docId, docRev);
 		}else{
-			response = db.saveAttachment(inputStream, name, contentType);
+			response = getDb().saveAttachment(inputStream, name, contentType);
 		}
 
-		connectorResponse = new ConnectorResponse(response);
+		setConnectorResponse(new ConnectorResponse(response));
 	}
 
 	/*
 	 * Getters and Setters
 	 */
-	public Database getDb() {
-		return db;
-	}
-
-	public void setDb(final Database db) {
-		this.db = db;
-	}
 
 }
