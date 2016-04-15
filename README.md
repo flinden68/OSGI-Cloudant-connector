@@ -14,7 +14,7 @@ In the xsp.properties of the nsf select the "nl.elstarit.cloudant.XspLibrary" at
 #Using the plugin#
 #First thing to do is to make connection with the cloudant server.
 
-CloudantConnector connector = new CloudantConnector(account, username, password);
+CloudantConnector connector = new CloudantConnector(account, username, password, dbName, create);
 
 #Check if there is already a connection established.
 
@@ -22,40 +22,45 @@ boolean isConnected = connector.isConnectedToCloudant();
 
 #Get all databases in your cloudant instance.
 
-List<String> dbs = (List<String>) connector.findAllDatabases();
+List<String> dbs = (List<String>) connector.getDocumentConnector().findAllDatabases();
 
-#Connect to a specific database.
+#Switch to a specific database.
 
-connector.setDatabase(String dbName, boolean create);
+connector.switchDatabase(String dbName, boolean create);
 
 #Create a database
 
-connector.createDb(String dbName);
+connector.getDocumentConnector().createDb(String dbName);
 
 #Delete a database
 
-connector.deleteDb(String dbName);
+connector.getDocumentConnector().deleteDb(String dbName);
 
 
-#When the database is set, there are methods to handle documents, even bulk actions
+#All the document related methods are in the documentConnector, there are methods to handle documents, even bulk actions
 
 #CRUD for bulk documents from a List of POJO's
 
-connector.createBulk(List<Object> objects);
+connector.getDocumentConnector().createBulk(List<Object> objects);
 
-connector.updateBulk(List<Object> objects);
+connector.getDocumentConnector().updateBulk(List<Object> objects);
 
-connector.deleteBulk(List<Object> objects);
+connector.getDocumentConnector().deleteBulk(List<Object> objects);
 
 List<Object> list = connector.findAllDocuments(Object.class);
 
 List<Object> list = connector.findAllDocumentIds();
 
 #CRUD single document
-connector.save(final Object obj);
 
-connector.delete(final Object obj);
+connector.getDocumentConnector().save(final Object obj);
 
-connector.update(final Object obj);
+connector.getDocumentConnector().delete(final Object obj);
 
-Object obj = connector.find(final Class<?> cls, final String id);
+connector.getDocumentConnector().update(final Object obj);
+
+Object obj = connector.getDocumentConnector().find(final Class<?> cls, final String id);
+
+#Add attachemnt to specific document, if docId or docRev is null therer will be a new document created.
+
+ConnectorResponse response = connector.getDocumentConnector().saveAttachment(InputStream, name, contenType, docId, revId)
