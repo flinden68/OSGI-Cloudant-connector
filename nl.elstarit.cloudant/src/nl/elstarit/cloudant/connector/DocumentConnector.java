@@ -1,138 +1,259 @@
 package nl.elstarit.cloudant.connector;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import nl.elstarit.cloudant.model.ConnectorResponse;
 
 import com.cloudant.client.api.Database;
 
+/**
+ * @author frank van der linden
+ *
+ */
 
 public class DocumentConnector {
-
+	private final static Logger LOGGER = Logger.getLogger(DocumentConnector.class.getName());
 	private Object clazz = null;
 	private List<?> abstractList;
 	private Database db;
 
 	public DocumentConnector(){}
 
+	/**
+	 *
+	 * @param obj
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void save(final Object obj) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DocumentConnector.this.saveImpl(obj);
-				return null;
-			}
-		});
+	public void save(final Object obj){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.saveImpl(obj);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 	}
 
+	/**
+	 *
+	 * @param obj
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void update(final Database db, final Object obj) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DocumentConnector.this.updateImpl(obj);
-				return null;
-			}
-		});
+	public void update(final Object obj){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.updateImpl(obj);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 	}
 
+	/**
+	 *
+	 * @param obj
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void delete(final Database db, final Object obj) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DocumentConnector.this.removeImpl(obj);
-				return null;
-			}
-		});
+	public void delete(final Object obj){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.removeImpl(obj);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 	}
 
+	/**
+	 *
+	 * @param cls
+	 * @param id
+	 * @return Document
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Object find(final Class<?> cls, final String id) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DocumentConnector.this.findImpl(cls,id);
-				return null;
-			}
-		});
+	public Object find(final Class<?> cls, final String id){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.findImpl(cls,id);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 
 		return clazz;
 	}
 
+	/**
+	 *
+	 * @param list
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void createBulk(final List<?> list) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DocumentConnector.this.createBulkImpl(list);
-				return null;
-			}
-		});
+	public void createBulk(final List<?> list){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.createBulkImpl(list);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 	}
 
+	/**
+	 *
+	 * @param list
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void updateBulk(final List<?> list) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DocumentConnector.this.updateBulkImpl(list);
-				return null;
-			}
-		});
+	public void updateBulk(final List<?> list){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.updateBulkImpl(list);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 	}
 
+
+	/**
+	 *
+	 * @param list
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void deleteBulk(final List<?> list) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DocumentConnector.this.removeBulkImpl(list);
-				return null;
-			}
-		});
+	public void deleteBulk(final List<?> list){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.removeBulkImpl(list);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 	}
 
+	/**
+	 *
+	 * @return List of All docIds
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<?> findAllDocumentIds() throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DocumentConnector.this.findAllDocumentIdsImpl();
-				return null;
-			}
-		});
+	public List<?> findAllDocumentIds(){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.findAllDocumentIdsImpl();
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 
 		return abstractList;
 	}
 
+	/**
+	 *
+	 * @param cls
+	 * @param docIds
+	 * @return List of all documents based on a array of docIds
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<?> findAllDocumentsById(final Class<?> cls, final String[] docIds) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DocumentConnector.this.findAllDocumentsByIdImpl(cls, docIds);
-				return null;
-			}
-		});
+	public List<?> findAllDocumentsById(final Class<?> cls, final String[] docIds){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.findAllDocumentsByIdImpl(cls, docIds);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 
 		return abstractList;
 	}
 
+	/**
+	 *
+	 * @param cls
+	 * @return List of all documents in the database
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<?> findAllDocuments(final Class<?> cls) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DocumentConnector.this.findAllDocumentsImpl(cls);
-				return null;
-			}
-		});
+	public List<?> findAllDocuments(final Class<?> cls){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.findAllDocumentsImpl(cls);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 
 		return abstractList;
+	}
+
+	/**
+	 *
+	 * @param inputStream
+	 * @param name
+	 * @param contentType
+	 * @param docId
+	 * @param docRev
+	 * @return ConnectorResponse, with the revId, docId and more...
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public Object saveAttachment(final InputStream inputStream, final String name, final String contentType, final String docId, final String docRev){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.saveAttachmentImpl(inputStream, name, contentType, docId, docRev);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
+
+		return clazz;
 	}
 
 	/*
@@ -194,6 +315,21 @@ public class DocumentConnector {
 		}
 	}
 
+	private void saveAttachmentImpl(final InputStream inputStream, final String name, final String contentType, final String docId, final String docRev){
+		ConnectorResponse response = new ConnectorResponse();
+		if(docId != null || docRev != null){
+			response = (ConnectorResponse) db.saveAttachment(inputStream, name, contentType, docId, docRev);
+		}else{
+			response = (ConnectorResponse) db.saveAttachment(inputStream, name, contentType);
+		}
+
+		clazz = response;
+
+	}
+
+	/*
+	 * Getters and Setters
+	 */
 	public Database getDb() {
 		return db;
 	}

@@ -4,12 +4,25 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.cloudant.client.api.CloudantClient;
 import com.cloudant.client.api.Database;
 
-public class DatabaseConnector {
+/**
+ * <pre>
+ * {@code
+ * CloudantConnector connector = new CloudantConnector(account, username, password, dbName, false);
+ *
+ * List<String> dbs = (List<String>) connector.getDatabaseConnector().findAllDatabases();
+ * }
+ * </pre>
+ * @author frank van der linden
+ */
 
+public class DatabaseConnector {
+	private final static Logger LOGGER = Logger.getLogger(DatabaseConnector.class.getName());
 	private Database db;
 	private CloudantClient client;
 
@@ -17,52 +30,68 @@ public class DatabaseConnector {
 
 	public DatabaseConnector(){}
 
-	public DatabaseConnector(final CloudantClient client, final String dbName, final boolean create) throws PrivilegedActionException{
+	public DatabaseConnector(final CloudantClient client, final String dbName, final boolean create){
 		initDatabase(client, dbName, create);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void initDatabase(final CloudantClient client, final String dbName, final boolean create) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DatabaseConnector.this.initDatabaseImpl(client, dbName, create);
-				return null;
-			}
-		});
+	public void initDatabase(final CloudantClient client, final String dbName, final boolean create){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DatabaseConnector.this.initDatabaseImpl(client, dbName, create);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void deleteDb(final String dbName) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DatabaseConnector.this.deleteDbImpl(dbName);
-				return null;
-			}
-		});
+	public void deleteDb(final String dbName){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DatabaseConnector.this.deleteDbImpl(dbName);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void createDb(final String dbName) throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DatabaseConnector.this.createDbImpl(dbName);
-				return null;
-			}
-		});
+	public void createDb(final String dbName){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DatabaseConnector.this.createDbImpl(dbName);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<?> findAllDatabases() throws PrivilegedActionException{
-		AccessController.doPrivileged(new PrivilegedExceptionAction() {
-			@Override
-			public Object run() throws Exception {
-				DatabaseConnector.this.findAllDatabasesImpl();
-				return null;
-			}
-		});
+	public List<?> findAllDatabases(){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DatabaseConnector.this.findAllDatabasesImpl();
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			LOGGER.log(Level.SEVERE, e.getMessage());
+		}
 
 		return abstractList;
 	}
@@ -90,6 +119,7 @@ public class DatabaseConnector {
 	private void createDbImpl(final String dbName){
 		client.createDB(dbName);
 	}
+
 	/*
 	 * Getters and Setters
 	 */
