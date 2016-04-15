@@ -6,6 +6,8 @@ import java.security.PrivilegedExceptionAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import nl.elstarit.cloudant.log.CloudantLogger;
+
 import com.cloudant.client.api.ClientBuilder;
 import com.cloudant.client.api.CloudantClient;
 
@@ -57,7 +59,7 @@ public class CloudantConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 

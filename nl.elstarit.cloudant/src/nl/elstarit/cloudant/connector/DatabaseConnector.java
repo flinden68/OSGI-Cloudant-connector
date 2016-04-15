@@ -5,7 +5,8 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import nl.elstarit.cloudant.log.CloudantLogger;
 
 import com.cloudant.client.api.CloudantClient;
 import com.cloudant.client.api.Database;
@@ -22,7 +23,6 @@ import com.cloudant.client.api.Database;
  */
 
 public class DatabaseConnector {
-	private final static Logger LOGGER = Logger.getLogger(DatabaseConnector.class.getName());
 	private Database db;
 	private CloudantClient client;
 
@@ -45,7 +45,7 @@ public class DatabaseConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -60,7 +60,7 @@ public class DatabaseConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -75,7 +75,7 @@ public class DatabaseConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -90,7 +90,7 @@ public class DatabaseConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
 		return abstractList;

@@ -7,11 +7,12 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import nl.elstarit.cloudant.log.CloudantLogger;
 import nl.elstarit.cloudant.model.ConnectorResponse;
 
 import com.cloudant.client.api.Database;
+import com.cloudant.client.api.model.Response;
 
 /**
  * @author frank van der linden
@@ -19,8 +20,8 @@ import com.cloudant.client.api.Database;
  */
 
 public class DocumentConnector {
-	private final static Logger LOGGER = Logger.getLogger(DocumentConnector.class.getName());
 	private Object clazz = null;
+	private ConnectorResponse connectorResponse = null;
 	private List<?> abstractList;
 	private Database db;
 
@@ -41,7 +42,7 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -60,7 +61,7 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -79,7 +80,7 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -100,7 +101,7 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
 		return clazz;
@@ -121,7 +122,7 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -140,7 +141,7 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -160,7 +161,7 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 
@@ -179,7 +180,7 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
 		return abstractList;
@@ -202,7 +203,7 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
 		return abstractList;
@@ -224,7 +225,7 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
 		return abstractList;
@@ -240,7 +241,7 @@ public class DocumentConnector {
 	 * @return ConnectorResponse, with the revId, docId and more...
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Object saveAttachment(final InputStream inputStream, final String name, final String contentType, final String docId, final String docRev){
+	public ConnectorResponse saveAttachment(final InputStream inputStream, final String name, final String contentType, final String docId, final String docRev){
 		try {
 			AccessController.doPrivileged(new PrivilegedExceptionAction() {
 				@Override
@@ -250,10 +251,10 @@ public class DocumentConnector {
 				}
 			});
 		} catch (final PrivilegedActionException e) {
-			LOGGER.log(Level.SEVERE, e.getMessage());
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
-		return clazz;
+		return connectorResponse;
 	}
 
 	/*
@@ -316,15 +317,14 @@ public class DocumentConnector {
 	}
 
 	private void saveAttachmentImpl(final InputStream inputStream, final String name, final String contentType, final String docId, final String docRev){
-		ConnectorResponse response = new ConnectorResponse();
+		Response response = null;
 		if(docId != null || docRev != null){
-			response = (ConnectorResponse) db.saveAttachment(inputStream, name, contentType, docId, docRev);
+			response = db.saveAttachment(inputStream, name, contentType, docId, docRev);
 		}else{
-			response = (ConnectorResponse) db.saveAttachment(inputStream, name, contentType);
+			response = db.saveAttachment(inputStream, name, contentType);
 		}
 
-		clazz = response;
-
+		connectorResponse = new ConnectorResponse(response);
 	}
 
 	/*

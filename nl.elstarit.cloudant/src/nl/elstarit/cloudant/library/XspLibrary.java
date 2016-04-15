@@ -6,7 +6,7 @@ import com.ibm.xsp.library.AbstractXspLibrary;
 
 public class XspLibrary extends AbstractXspLibrary {
 
-	public static final String LIBRARY_ID = XspLibrary.class.getName();
+	public static final String LIBRARY_ID = "nl.elstarit.cloudant.library"; //XspLibrary.class.getName();
 
 	public XspLibrary() {
 		System.out.println("Loading Cloudant Connector ("+getPluginId()+")");
