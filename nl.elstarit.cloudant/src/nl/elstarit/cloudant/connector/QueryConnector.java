@@ -68,6 +68,23 @@ public class QueryConnector extends BaseConnector {
 		return getAbstractList();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<?> findByIndex(final String selectorJson, final Class<?> cls){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					QueryConnector.this.findByIndexImpl(selectorJson, cls);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+
+		return getAbstractList();
+	}
+
 	/*
 	 * Impl methods
 	 */
@@ -87,6 +104,10 @@ public class QueryConnector extends BaseConnector {
 		}
 
 		setAbstractList(connectorIndices);
+	}
+
+	private void findByIndexImpl(final String selectorJson, final Class<?> cls){
+		setAbstractList(getDb().findByIndex(selectorJson, cls));
 	}
 
 }
