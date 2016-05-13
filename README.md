@@ -64,3 +64,16 @@ Object obj = connector.getDocumentConnector().find(final Class<?> cls, final Str
 #Add attachemnt to specific document, if docId or docRev is null therer will be a new document created.
 
 ConnectorResponse response = connector.getDocumentConnector().saveAttachment(InputStream, name, contenType, docId, revId)
+
+#Query the database and make use of the indices.
+
+List<?> connector.getQueryConnector().search(final String searchIndexId, final Class<?> cls, final Integer queryLimit, final String query)
+To learn about the query syntax see, https://docs.cloudant.com/search.html
+
+To get all the indices
+
+List<?> allIndices();
+
+To find documents using an index
+
+List<?> findByIndex(final String selectorJson, final Class<?> cls)
