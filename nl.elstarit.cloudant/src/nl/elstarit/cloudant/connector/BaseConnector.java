@@ -5,12 +5,14 @@ package nl.elstarit.cloudant.connector;
 
 import java.util.List;
 
+import nl.elstarit.cloudant.model.ConnectorDbInfo;
 import nl.elstarit.cloudant.model.ConnectorResponse;
 
 import com.cloudant.client.api.Database;
 
 /**
  * @author frankvanderlinden
+ * http://codenav.org/code.html?project=/com/cloudant/cloudant-client/1.0.0-beta1&path=/Source%20Packages/test.java.com.cloudant.tests/ChangeNotificationsTest.java
  *
  */
 public class BaseConnector {
@@ -55,6 +57,10 @@ public class BaseConnector {
 
 	public void setConnectorResponse(final ConnectorResponse connectorResponse) {
 		this.connectorResponse = connectorResponse;
+	}
+
+	public ConnectorDbInfo getConnectorDbInfo(){
+		return new ConnectorDbInfo(db.info());
 	}
 
 }

@@ -26,6 +26,7 @@ public class CloudantConnector {
 	private DatabaseConnector databaseConnector;
 	private DocumentConnector documentConnector;
 	private QueryConnector queryConnector;
+	private ChangesConnector changesConnector;
 
 	/**
 	 *
@@ -41,6 +42,7 @@ public class CloudantConnector {
 		initCloudantDatabaseConnector(dbName, create);
 		initCloudantDocumentConnector();
 		initCloudantQueryConnector();
+		initCloudantChangesConnector();
 	}
 
 	/**
@@ -66,34 +68,41 @@ public class CloudantConnector {
 
 	/**
 	 *
-	 * @param dbName
-	 * @param create
-	 */
-	public void initCloudantDatabaseConnector(final String dbName, final boolean create){
-		if(databaseConnector == null){
-			databaseConnector = new DatabaseConnector(client, dbName, create);
-		}
-	}
-
-	/**
-	 *
 	 * @return boolean, if client is already connected
 	 */
 	public boolean isConnectedToCloudant(){
 		return client != null;
 	}
 
-	public void initCloudantDocumentConnector(){
+	/**
+	 *
+	 * @param dbName
+	 * @param create
+	 */
+	private void initCloudantDatabaseConnector(final String dbName, final boolean create){
+		if(databaseConnector == null){
+			databaseConnector = new DatabaseConnector(client, dbName, create);
+		}
+	}
+
+	private void initCloudantDocumentConnector(){
 		if(documentConnector == null){
 			documentConnector = new DocumentConnector();
 			documentConnector.setDb(databaseConnector.getDb());
 		}
 	}
 
-	public void initCloudantQueryConnector(){
+	private void initCloudantQueryConnector(){
 		if(queryConnector == null){
 			queryConnector = new QueryConnector();
 			queryConnector.setDb(databaseConnector.getDb());
+		}
+	}
+
+	private void initCloudantChangesConnector(){
+		if(changesConnector == null){
+			changesConnector = new ChangesConnector();
+			changesConnector.setDb(databaseConnector.getDb());
 		}
 	}
 
