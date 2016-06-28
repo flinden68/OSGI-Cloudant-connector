@@ -31,7 +31,8 @@ public class ConnectorIndex {
 	private void loadFields(final Iterator<IndexField> iterator){
 		this.fields = new ArrayList<ConnectorIndexField>();
 		while (iterator.hasNext()) {
-			final ConnectorIndexField field = new ConnectorIndexField(iterator.next().getName(), iterator.next().getOrder().toString());
+			final IndexField indexField = iterator.next();
+			final ConnectorIndexField field = new ConnectorIndexField(indexField.getName(), indexField.getOrder().name());
 			this.fields.add(field);
 		}
 	}

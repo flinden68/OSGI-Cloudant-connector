@@ -8,10 +8,11 @@ import java.security.PrivilegedExceptionAction;
 import java.util.List;
 import java.util.logging.Level;
 
+import com.cloudant.client.api.model.Response;
+import com.cloudant.client.api.views.Key;
+
 import nl.elstarit.cloudant.log.CloudantLogger;
 import nl.elstarit.cloudant.model.ConnectorResponse;
-
-import com.cloudant.client.api.model.Response;
 
 /**
  * @author frank van der linden
@@ -207,6 +208,33 @@ public class DocumentConnector extends BaseConnector {
 	/**
 	 *
 	 * @param cls
+	 * @param designDoc, name of the design doc
+	 * @param viewName, name of the View
+	 * @param keyType, specify what the key is for type, default STRING, but could also NUMBER or BOOLEAN
+	 * @param limit, the limit or results returned
+	 * @return List of all documents based from a view
+	 */
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<?> findAllDocumentsFromView(final Class<?> cls, final String designDoc, final String viewName, final String keyType, final int limit){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.findAllDocumentsFromViewImpl(cls, designDoc, viewName, keyType, limit);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+
+		return getAbstractList();
+	}
+
+	/**
+	 *
+	 * @param cls
 	 * @return List of all documents in the database
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -311,6 +339,23 @@ public class DocumentConnector extends BaseConnector {
 		}
 	}
 
+	@SuppressWarnings("unused")
+	private void findAllDocumentsFromViewImpl(final Class<?> cls, final String designDoc, final String viewName, final String keyType, final int limit){
+		try {
+			final List<?> list = getDb().getViewRequestBuilder(designDoc,viewName)
+					.newRequest(Key.Type.STRING, Object.class)
+					.limit(limit)
+					.includeDocs(true)
+					.build()
+					.getResponse()
+					.getDocsAs(cls);
+
+			setAbstractList(list);
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void saveAttachmentImpl(final InputStream inputStream, final String name, final String contentType, final String docId, final String docRev){
 		Response response = null;
 		if(docId != null || docRev != null){
@@ -320,6 +365,16 @@ public class DocumentConnector extends BaseConnector {
 		}
 
 		setConnectorResponse(new ConnectorResponse(response));
+	}
+
+	@SuppressWarnings("rawtypes")
+	private Key.Type getKeyType(final String keyType){
+		if("BOOLEAN".equals(keyType)){
+			return Key.Type.BOOLEAN;
+		}else if("NUMBER".equals(keyType)){
+			return Key.Type.NUMBER;
+		}
+		return Key.Type.STRING;
 	}
 
 	/*

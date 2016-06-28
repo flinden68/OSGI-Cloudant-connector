@@ -5,10 +5,10 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.logging.Level;
 
-import nl.elstarit.cloudant.log.CloudantLogger;
-
 import com.cloudant.client.api.ClientBuilder;
 import com.cloudant.client.api.CloudantClient;
+
+import nl.elstarit.cloudant.log.CloudantLogger;
 
 /**
  * <pre>
@@ -156,6 +156,14 @@ public class CloudantConnector {
 
 	public void setQueryConnector(final QueryConnector queryConnector) {
 		this.queryConnector = queryConnector;
+	}
+
+	public ChangesConnector getChangesConnector() {
+		return changesConnector;
+	}
+
+	public void setChangesConnector(final ChangesConnector changesConnector) {
+		this.changesConnector = changesConnector;
 	}
 
 }

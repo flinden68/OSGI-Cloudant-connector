@@ -8,12 +8,12 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.logging.Level;
 
-import nl.elstarit.cloudant.log.CloudantLogger;
-import nl.elstarit.cloudant.model.ConnectorChangesResult;
-
 import com.cloudant.client.api.Changes;
 import com.cloudant.client.api.model.ChangesResult;
 import com.cloudant.client.api.model.DbInfo;
+
+import nl.elstarit.cloudant.log.CloudantLogger;
+import nl.elstarit.cloudant.model.ConnectorChangesResult;
 
 /**
  * @author frankvanderlinden
@@ -67,7 +67,7 @@ public class ChangesConnector extends BaseConnector {
 	 */
 
 	// feed type normal
-	public void normalFeedImpl(final int limit, final String filter){
+	private void normalFeedImpl(final int limit, final String filter){
 
 		final String since = getDb().info().getUpdateSeq(); // latest update seq
 		final ChangesResult changeResult = getDb().changes()
@@ -82,7 +82,7 @@ public class ChangesConnector extends BaseConnector {
 	}
 
 	// feed type continuous
-	public void continuesFeedImpl(final long heartBeat){
+	private void continuesFeedImpl(final long heartBeat){
 
 		final DbInfo dbInfo = getDb().info();
 		final String since = dbInfo.getUpdateSeq();
