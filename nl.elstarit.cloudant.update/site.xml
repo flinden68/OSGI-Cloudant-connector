@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/nl.elstarit.cloudant.feature_1.0.0.201606281910.jar" id="nl.elstarit.cloudant.feature" version="1.0.0.201606281910">
+   <feature url="features/nl.elstarit.cloudant.feature_1.0.0.201606291737.jar" id="nl.elstarit.cloudant.feature" version="1.0.0.201606291737">
       <category name="Cloudant Connector"/>
    </feature>
    <category-def name="Cloudant Connector" label="Cloudant Connector"/>

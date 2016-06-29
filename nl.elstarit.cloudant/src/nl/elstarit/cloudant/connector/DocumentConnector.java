@@ -28,7 +28,7 @@ public class DocumentConnector extends BaseConnector {
 	 * @param obj
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void save(final Object obj){
+	public ConnectorResponse save(final Object obj){
 		try {
 			AccessController.doPrivileged(new PrivilegedExceptionAction() {
 				@Override
@@ -40,6 +40,7 @@ public class DocumentConnector extends BaseConnector {
 		} catch (final PrivilegedActionException e) {
 			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
+		return getConnectorResponse();
 	}
 
 	/**
@@ -47,7 +48,7 @@ public class DocumentConnector extends BaseConnector {
 	 * @param obj
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void update(final Object obj){
+	public ConnectorResponse update(final Object obj){
 		try {
 			AccessController.doPrivileged(new PrivilegedExceptionAction() {
 				@Override
@@ -59,6 +60,8 @@ public class DocumentConnector extends BaseConnector {
 		} catch (final PrivilegedActionException e) {
 			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
+
+		return getConnectorResponse();
 	}
 
 	/**
@@ -285,11 +288,11 @@ public class DocumentConnector extends BaseConnector {
 	 */
 
 	private void saveImpl(final Object obj){
-		getDb().save(obj);
+		setConnectorResponse(new ConnectorResponse(getDb().save(obj)));
 	}
 
 	private void updateImpl(final Object obj){
-		getDb().update(obj);
+		setConnectorResponse(new ConnectorResponse(getDb().update(obj)));
 	}
 
 	private void removeImpl(final Object obj){
