@@ -238,6 +238,35 @@ public class DocumentConnector extends BaseConnector {
 	/**
 	 *
 	 * @param cls
+	 * @param designDoc, name of the design doc
+	 * @param viewName, name of the View
+	 * @param keyType, specify what the key is for type, default STRING, but could also NUMBER or BOOLEAN
+	 * @param limit, the limit or results returned
+	 * @param startKey, key where to start in the view
+	 * @param endKey, key where to end in the view
+	 * @return List of all documents based from a view
+	 */
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<?> findAllDocumentsFromViewKeys(final Class<?> cls, final String designDoc, final String viewName, final String keyType, final int limit, final String startKey, final String endKey){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.findAllDocumentsFromViewKeysImpl(cls, designDoc, viewName, keyType, limit, startKey, endKey );
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+
+		return getAbstractList();
+	}
+
+	/**
+	 *
+	 * @param cls
 	 * @return List of all documents in the database
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -286,13 +315,14 @@ public class DocumentConnector extends BaseConnector {
 	/*
 	 * Impl methods
 	 */
-
 	private void saveImpl(final Object obj){
-		setConnectorResponse(new ConnectorResponse(getDb().save(obj)));
+		final Response response = getDb().save(obj);
+		setConnectorResponse(new ConnectorResponse(response));
 	}
 
 	private void updateImpl(final Object obj){
-		setConnectorResponse(new ConnectorResponse(getDb().update(obj)));
+		final Response response = getDb().update(obj);
+		setConnectorResponse(new ConnectorResponse(response));
 	}
 
 	private void removeImpl(final Object obj){
@@ -347,6 +377,25 @@ public class DocumentConnector extends BaseConnector {
 		try {
 			final List<?> list = getDb().getViewRequestBuilder(designDoc,viewName)
 					.newRequest(Key.Type.STRING, Object.class)
+					.limit(limit)
+					.includeDocs(true)
+					.build()
+					.getResponse()
+					.getDocsAs(cls);
+
+			setAbstractList(list);
+		} catch (final IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private void findAllDocumentsFromViewKeysImpl(final Class<?> cls, final String designDoc, final String viewName, final String keyType, final int limit, final String startKey, final String endKey){
+		try {
+			final List<?> list = getDb().getViewRequestBuilder(designDoc,viewName)
+					.newRequest(Key.Type.STRING, Object.class)
+					.startKey(startKey)
+					.endKey(endKey)
 					.limit(limit)
 					.includeDocs(true)
 					.build()
