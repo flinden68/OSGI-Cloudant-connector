@@ -89,40 +89,21 @@ public class ConnectorResponse{
 		return error;
 	}
 
-	public void setError(final String error) {
-		this.error = error;
-	}
-
 	public String getId() {
 		return id;
-	}
-
-	public void setId(final String id) {
-		this.id = id;
 	}
 
 	public String getRev() {
 		return rev;
 	}
 
-	public void setRev(final String rev) {
-		this.rev = rev;
-	}
-
 	public String getReason() {
 		return reason;
-	}
-
-	public void setReason(final String reason) {
-		this.reason = reason;
 	}
 
 	public int getStatusCode() {
 		return statusCode;
 	}
 
-	public void setStatusCode(final int statusCode) {
-		this.statusCode = statusCode;
-	}
 
 }

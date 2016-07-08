@@ -5,9 +5,12 @@ import java.io.InputStream;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
+import com.cloudant.client.api.model.DesignDocument;
 import com.cloudant.client.api.model.Response;
 import com.cloudant.client.api.views.Key;
 
@@ -296,7 +299,7 @@ public class DocumentConnector extends BaseConnector {
 	 * @return ConnectorResponse, with the revId, docId and more...
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ConnectorResponse saveAttachment(final InputStream inputStream, final String name, final String contentType, final String docId, final String docRev){
+	public ConnectorResponse saveStandAloneAttachment(final InputStream inputStream, final String name, final String contentType, final String docId, final String docRev){
 		try {
 			AccessController.doPrivileged(new PrivilegedExceptionAction() {
 				@Override
@@ -419,6 +422,23 @@ public class DocumentConnector extends BaseConnector {
 		setConnectorResponse(new ConnectorResponse(response));
 	}
 
+	private void createDesignDocumentImpl(final Map<String, String> updates, final String designDocument){
+		final DesignDocument ddoc = new DesignDocument();
+		ddoc.setId("_design/"+designDocument);
+		getDb().save(ddoc);
+	}
+
+	private void updateDesignDocumentImpl(final Map<String, String> updates, final String designDocument){
+		final DesignDocument ddoc = getDb().find(DesignDocument.class, "_design/"+designDocument);
+		// Call setters to update values
+		final Map<String, String> newUpdates = new HashMap<String, String>();
+		newUpdates.put("newUpdateHandler", "function (doc, req) { ... }");
+		ddoc.setUpdates(updates);
+		// Update the design document
+		getDb().update(ddoc);
+	}
+
+
 	@SuppressWarnings("rawtypes")
 	private Key.Type getKeyType(final String keyType){
 		if("BOOLEAN".equals(keyType)){
@@ -429,8 +449,5 @@ public class DocumentConnector extends BaseConnector {
 		return Key.Type.STRING;
 	}
 
-	/*
-	 * Getters and Setters
-	 */
 
 }
