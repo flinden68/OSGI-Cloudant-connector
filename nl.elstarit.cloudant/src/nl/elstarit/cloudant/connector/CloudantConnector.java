@@ -1,9 +1,14 @@
 package nl.elstarit.cloudant.connector;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
+import javax.net.ssl.SSLSocketFactory;
 
 import com.cloudant.client.api.ClientBuilder;
 import com.cloudant.client.api.CloudantClient;
@@ -28,21 +33,8 @@ public class CloudantConnector {
 	private QueryConnector queryConnector;
 	private ChangesConnector changesConnector;
 
-	/**
-	 *
-	 * @param account
-	 * @param username
-	 * @param password
-	 * @param dbName
-	 * @param create
-	 */
-	public CloudantConnector(final String account, final String username, final String password,final String dbName, final boolean create){
-		initCloudantClient(account, username, password);
+	public CloudantConnector(){
 
-		initCloudantDatabaseConnector(dbName, create);
-		initCloudantDocumentConnector();
-		initCloudantQueryConnector();
-		initCloudantChangesConnector();
 	}
 
 	/**
@@ -52,12 +44,77 @@ public class CloudantConnector {
 	 * @param password
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void initCloudantClient(final String account, final String username, final String password){
+	public void initCloudantClient(final String account, final String username, final String password,final String dbName, final boolean create){
 		try {
 			AccessController.doPrivileged(new PrivilegedExceptionAction() {
 				@Override
 				public Object run() throws Exception {
 					CloudantConnector.this.cloudantClientImpl(account, username,  password);
+					CloudantConnector.this.initAllConnectors(dbName, create);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void initCloudantClientLocal(final String url, final String username, final String password,final String dbName, final boolean create){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					CloudantConnector.this.cloudantClientImpl(url, username,  password);
+					CloudantConnector.this.initAllConnectors(dbName, create);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void initCloudantClientProxy(final String account, final String username, final String password,final String dbName, final boolean create, final String proxyUrl, final String proxyUser, final String proxyPassword){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					CloudantConnector.this.cloudantClientProxyImpl(account, username,  password, proxyUrl, proxyUser, proxyPassword);
+					CloudantConnector.this.initAllConnectors(dbName, create);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void initCloudantClientSsl(final String account, final String username, final String password,final String dbName, final boolean create, final SSLSocketFactory factory){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					CloudantConnector.this.cloudantClientSslImpl(account, username,  password, factory);
+					CloudantConnector.this.initAllConnectors(dbName, create);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void initCloudantClientAdvanced(final String account, final String username, final String password,final String dbName, final boolean create, final long connectTimeout, final long readTimeout, final TimeUnit timeUnit){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					CloudantConnector.this.cloudantClientAdvancedImpl(account, username,  password, connectTimeout, readTimeout, timeUnit);
+					CloudantConnector.this.initAllConnectors(dbName, create);
 					return null;
 				}
 			});
@@ -72,6 +129,13 @@ public class CloudantConnector {
 	 */
 	public boolean isConnectedToCloudant(){
 		return client != null;
+	}
+
+	private void initAllConnectors(final String dbName, final boolean create){
+		initCloudantDatabaseConnector(dbName, create);
+		initCloudantDocumentConnector();
+		initCloudantQueryConnector();
+		initCloudantChangesConnector();
 	}
 
 	/**
@@ -127,6 +191,58 @@ public class CloudantConnector {
 			client = ClientBuilder.account(account)
 					.username(username)
 					.password(password)
+					.build();
+		}
+	}
+
+	private void cloudantClientLocalImpl(final String url, final String username, final String password){
+		try {
+			if(!isConnectedToCloudant()){
+
+				client = ClientBuilder.url(new URL(url))
+						.username(username)
+						.password(password)
+						.build();
+			}
+		} catch (final MalformedURLException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	private void cloudantClientProxyImpl(final String account, final String username, final String password, final String proxyUrl, final String proxyUser, final String proxyPassword){
+		try {
+			if(!isConnectedToCloudant()){
+
+				client = ClientBuilder.account(account)
+						.username(username)
+						.password(password)
+						.proxyURL(new URL(proxyUrl))
+						.proxyUser(proxyUser)
+						.proxyPassword(proxyPassword)
+						.build();
+			}
+		} catch (final MalformedURLException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	private void cloudantClientSslImpl(final String account, final String username, final String password, final SSLSocketFactory factory){
+		if(!isConnectedToCloudant()){
+			client = ClientBuilder.account(account)
+					.username(username)
+					.password(password)
+					.customSSLSocketFactory(factory)
+					.build();
+		}
+	}
+
+	private void cloudantClientAdvancedImpl(final String account, final String username, final String password, final long connectTimeout, final long readTimeout, final TimeUnit timeUnit){
+		if(!isConnectedToCloudant()){
+			client = ClientBuilder.account(account)
+					.username(username)
+					.password(password)
+					.connectTimeout(connectTimeout, timeUnit)
+					.readTimeout(readTimeout, timeUnit)
 					.build();
 		}
 	}
