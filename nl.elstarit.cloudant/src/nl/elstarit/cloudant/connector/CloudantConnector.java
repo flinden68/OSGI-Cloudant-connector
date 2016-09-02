@@ -92,12 +92,12 @@ public class CloudantConnector {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void initCloudantClientSsl(final String account, final String username, final String password,final String dbName, final boolean create, final SSLSocketFactory factory){
+	public void initCloudantClientSsl(final String account, final String username, final String password,final String dbName, final boolean create, final SSLSocketFactory factory, final long connectTimeout, final long readTimeout, final TimeUnit timeUnit){
 		try {
 			AccessController.doPrivileged(new PrivilegedExceptionAction() {
 				@Override
 				public Object run() throws Exception {
-					CloudantConnector.this.cloudantClientSslImpl(account, username,  password, factory);
+					CloudantConnector.this.cloudantClientSslImpl(account, username,  password, factory, connectTimeout, readTimeout, timeUnit);
 					CloudantConnector.this.initAllConnectors(dbName, create);
 					return null;
 				}
@@ -226,7 +226,7 @@ public class CloudantConnector {
 		}
 	}
 
-	private void cloudantClientSslImpl(final String account, final String username, final String password, final SSLSocketFactory factory){
+	private void cloudantClientSslImpl(final String account, final String username, final String password, final SSLSocketFactory factory, final long connectTimeout, final long readTimeout, final TimeUnit timeUnit){
 		if(!isConnectedToCloudant()){
 			client = ClientBuilder.account(account)
 					.username(username)
