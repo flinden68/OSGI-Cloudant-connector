@@ -5,10 +5,10 @@ package nl.elstarit.cloudant.connector;
 
 import java.util.List;
 
+import com.cloudant.client.api.Database;
+
 import nl.elstarit.cloudant.model.ConnectorDbInfo;
 import nl.elstarit.cloudant.model.ConnectorResponse;
-
-import com.cloudant.client.api.Database;
 
 /**
  * @author frankvanderlinden
@@ -21,6 +21,7 @@ public class BaseConnector {
 	private ConnectorResponse connectorResponse = null;
 
 	private List<?> abstractList;
+
 	private Database db;
 
 	public BaseConnector(){
