@@ -102,3 +102,10 @@ List<?> allIndices();
 #To find documents using an index
 
 List<?> findByIndex(final String selectorJson, final Class<?> cls)
+
+#Permissions
+To get the Permissions of database.
+Map<String, HashSet<CloudantPermissions>> connector.getDatabaseConnector().getPermissions();
+
+Or to set Permissions
+connector.getDatabaseConnector.setPermissions(final String userNameorApikey, final Set<CloudantPermissions> permissions)

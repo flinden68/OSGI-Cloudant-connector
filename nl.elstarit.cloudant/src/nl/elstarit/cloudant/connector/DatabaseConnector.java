@@ -102,7 +102,7 @@ public class DatabaseConnector extends BaseConnector {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<?> setPermissions(final String userNameorApikey, final Set<CloudantPermissions> permissions){
+	public void setPermissions(final String userNameorApikey, final Set<CloudantPermissions> permissions){
 		try {
 			AccessController.doPrivileged(new PrivilegedExceptionAction() {
 				@Override
@@ -115,7 +115,7 @@ public class DatabaseConnector extends BaseConnector {
 			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 
-		return getAbstractList();
+		//return getAbstractList();
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
