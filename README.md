@@ -11,8 +11,12 @@ Download the update site and point your update site database to the site.xml to 
 And Go..
 In the xsp.properties of the nsf select the "nl.elstarit.cloudant.XspLibrary" at the Page generation tab
 
+#Important
+The connector is asking for a account, this can be calculated by the following syntax, username:password@username
+
 #Using the plugin#
 #First thing to do is to make connection with the cloudant server.
+
 
 CloudantConnector connector = new CloudantConnector();
 
