@@ -129,8 +129,8 @@ public class DocumentConnector extends BaseConnector {
 	}
 
 	/**
-	 *
-	 * @param list
+	 * @param: updates, map of updates, where the value of the map is the javascript of the selection
+	 * @designDocument: the name of the designDocument to create
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void updateBulk(final List<?> list){
@@ -146,7 +146,6 @@ public class DocumentConnector extends BaseConnector {
 			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
-
 
 	/**
 	 *
@@ -315,6 +314,44 @@ public class DocumentConnector extends BaseConnector {
 		return getConnectorResponse();
 	}
 
+	/**
+	 * @param: updates, map of updates, where the value of the map is the javascript of the selection
+	 * @designDocument: the name of the designDocument to create
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void createDesignDocument(final Map<String, String> updates, final String designDocument){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.createDesignDocumentImpl(updates, designDocument);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	/**
+	 * @param: updates, map of updates, where the value of the map is the javascript of the selection
+	 * @designDocument: the name of the designDocument to create
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void updateDesignDocument(final Map<String, String> updates, final String designDocument){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.updateDesignDocumentImpl(updates, designDocument);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
 	/*
 	 * Impl methods
 	 */
@@ -422,11 +459,21 @@ public class DocumentConnector extends BaseConnector {
 		setConnectorResponse(new ConnectorResponse(response));
 	}
 
+	/*
+	 * @param: updates, map of updates, where the value of the map is the javascript of the selection
+	 * @designDocument: the name of the designDocument to create
+	 */
 	private void createDesignDocumentImpl(final Map<String, String> updates, final String designDocument){
 		final DesignDocument ddoc = new DesignDocument();
 		ddoc.setId("_design/"+designDocument);
+		ddoc.setUpdates(updates);
 		getDb().save(ddoc);
 	}
+
+	/*
+	 * @param: updates, map of updates, where the value of the map is the javascript of the selection
+	 * @designDocument: the name of the designDocument to update
+	 */
 
 	private void updateDesignDocumentImpl(final Map<String, String> updates, final String designDocument){
 		final DesignDocument ddoc = getDb().find(DesignDocument.class, "_design/"+designDocument);
