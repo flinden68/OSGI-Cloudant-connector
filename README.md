@@ -112,4 +112,11 @@ To get the Permissions of database.
 Map<String, HashSet<CloudantPermissions>> connector.getDatabaseConnector().getPermissions();
 
 Or to set Permissions
-connector.getDatabaseConnector.setPermissions(final String userNameorApikey, final Set<CloudantPermissions> permissions)
+connector.getDatabaseConnector().setPermissions(final String userNameorApikey, final Set<CloudantPermissions> permissions)
+
+#Design documents
+updates, map of updates, where the value of the map is the javascript of the selection
+designDocument: the name of the designDocument to create or update
+
+connector.getDocumentConnector().createDesignDocument(final Map<String, String> updates, final String designDocument)
+connector.getDocumentConnector().updateDesignDocument(final Map<String, String> updates, final String designDocument)
