@@ -119,4 +119,5 @@ updates, map of updates, where the value of the map is the javascript of the sel
 designDocument: the name of the designDocument to create or update
 
 connector.getDocumentConnector().createDesignDocument(final Map<String, String> updates, final String designDocument)
+
 connector.getDocumentConnector().updateDesignDocument(final Map<String, String> updates, final String designDocument)
