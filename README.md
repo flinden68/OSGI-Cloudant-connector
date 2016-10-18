@@ -129,6 +129,8 @@ For the create and update methods the parameters are the json to be put in views
     "map": "function (doc) {\n    if(doc.dataType == \"CONFIG\"){\n    emit(doc._id, 1);\n  }\n}"
    }
 
-createView(final String viewJson, final String indexJson, final String viewName)
-updateView(final String viewJson, final String indexJson, final String viewName)
+createView(final String viewJson, final String indexJson, final String viewName);
+
+updateView(final String viewJson, final String indexJson, final String viewName);
+
 deleteView(final String viewName)
