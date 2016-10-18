@@ -7,13 +7,15 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
+
+import com.cloudant.client.api.model.Index;
 
 import nl.elstarit.cloudant.log.CloudantLogger;
 import nl.elstarit.cloudant.model.ConnectorIndex;
-
-import com.cloudant.client.api.model.Index;
 
 
 /**
@@ -85,6 +87,22 @@ public class QueryConnector extends BaseConnector {
 		return getAbstractList();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void createIndex(final Map<String, Object> search, final String searchindex){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					QueryConnector.this.createIndexImpl(search, searchindex);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+
+	}
+
 	/*
 	 * Impl methods
 	 */
@@ -109,5 +127,17 @@ public class QueryConnector extends BaseConnector {
 	private void findByIndexImpl(final String selectorJson, final Class<?> cls){
 		setAbstractList(getDb().findByIndex(selectorJson, cls));
 	}
+
+	private void createIndexImpl(final Map<String, Object> search, final String searchindex){
+
+		final Map<String, Object> indexes = new HashMap<String, Object>();
+		indexes.put("search", search);
+		final Map<String, Object> ddoc = new HashMap<String, Object>();
+		ddoc.put("_id", "_design/"+searchindex);
+		ddoc.put("indexes", indexes);
+
+		getDb().save(ddoc);
+	}
+
 
 }

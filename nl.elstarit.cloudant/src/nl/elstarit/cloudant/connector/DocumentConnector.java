@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.cloudant.client.api.model.DesignDocument;
 import com.cloudant.client.api.model.Response;
 import com.cloudant.client.api.views.Key;
@@ -352,6 +354,51 @@ public class DocumentConnector extends BaseConnector {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void createView(final String viewJson, final String indexJson, final String viewName){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.createViewImpl(viewJson, indexJson, viewName);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void updateView(final String viewJson, final String indexJson, final String viewName){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.updateViewImpl(viewJson, indexJson, viewName);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void deleteView(final String viewName){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					DocumentConnector.this.deleteViewImpl(viewName);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
 	/*
 	 * Impl methods
 	 */
@@ -478,11 +525,44 @@ public class DocumentConnector extends BaseConnector {
 	private void updateDesignDocumentImpl(final Map<String, String> updates, final String designDocument){
 		final DesignDocument ddoc = getDb().find(DesignDocument.class, "_design/"+designDocument);
 		// Call setters to update values
-		final Map<String, String> newUpdates = new HashMap<String, String>();
-		newUpdates.put("newUpdateHandler", "function (doc, req) { ... }");
 		ddoc.setUpdates(updates);
 		// Update the design document
 		getDb().update(ddoc);
+	}
+
+	private void createViewImpl(final String viewJson, final String indexJson, final String viewName){
+
+		final Map<String, Object> ddoc = new HashMap<String, Object>();
+		ddoc.put("_id", "_design/"+viewName);
+		if(StringUtils.isNotBlank(viewJson)){
+			ddoc.put("views", viewJson);
+		}
+		if(StringUtils.isNotBlank(indexJson)) {
+			ddoc.put("indexes", indexJson);
+		}
+
+		getDb().save(ddoc);
+	}
+
+	private void updateViewImpl(final String viewJson, final String indexJson, final String viewName){
+
+		final Map<String, Object> ddoc = new HashMap<String, Object>();
+		ddoc.put("_id", "_design/"+viewName);
+		if(StringUtils.isNotBlank(viewJson)){
+			ddoc.put("views", viewJson);
+		}
+		if(StringUtils.isNotBlank(indexJson)) {
+			ddoc.put("indexes", indexJson);
+		}
+
+		getDb().update(ddoc);
+	}
+
+	private void deleteViewImpl(final String viewName){
+		final DesignDocument ddoc = getDb().find(DesignDocument.class, "_design/"+viewName);
+		if(ddoc != null){
+			getDb().remove(ddoc);
+		}
 	}
 
 

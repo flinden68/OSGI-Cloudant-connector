@@ -121,3 +121,14 @@ designDocument: the name of the designDocument to create or update
 connector.getDocumentConnector().createDesignDocument(final Map<String, String> updates, final String designDocument)
 
 connector.getDocumentConnector().updateDesignDocument(final Map<String, String> updates, final String designDocument)
+
+#Views
+Programmatically create, update and deleter views
+For the create and update methods the parameters are the json to be put in views part or the indexes part of the design documents
+"configurations": {
+    "map": "function (doc) {\n    if(doc.dataType == \"CONFIG\"){\n    emit(doc._id, 1);\n  }\n}"
+   }
+
+createView(final String viewJson, final String indexJson, final String viewName)
+updateView(final String viewJson, final String indexJson, final String viewName)
+deleteView(final String viewName)
