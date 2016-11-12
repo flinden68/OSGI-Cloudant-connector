@@ -123,6 +123,22 @@ public class CloudantConnector {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void initCloudantClientLocalAdvanced(final String url, final String username, final String password,final String dbName, final boolean create, final long connectTimeout, final long readTimeout, final TimeUnit timeUnit){
+		try {
+			AccessController.doPrivileged(new PrivilegedExceptionAction() {
+				@Override
+				public Object run() throws Exception {
+					CloudantConnector.this.cloudantClientLocalAdvancedImpl(url, username,  password, connectTimeout, readTimeout, timeUnit);
+					CloudantConnector.this.initAllConnectors(dbName, create);
+					return null;
+				}
+			});
+		} catch (final PrivilegedActionException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
+		}
+	}
+
 	/**
 	 *
 	 * @return boolean, if client is already connected
@@ -244,6 +260,21 @@ public class CloudantConnector {
 					.connectTimeout(connectTimeout, timeUnit)
 					.readTimeout(readTimeout, timeUnit)
 					.build();
+		}
+	}
+
+	private void cloudantClientLocalAdvancedImpl(final String url, final String username, final String password, final long connectTimeout, final long readTimeout, final TimeUnit timeUnit){
+		try {
+			if(!isConnectedToCloudant()){
+				client = ClientBuilder.url(new URL(url))
+						.username(username)
+						.password(password)
+						.connectTimeout(connectTimeout, timeUnit)
+						.readTimeout(readTimeout, timeUnit)
+						.build();
+			}
+		} catch (final MalformedURLException e) {
+			CloudantLogger.CLOUDANT.getLogger().log(Level.SEVERE, e.getMessage());
 		}
 	}
 
