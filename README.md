@@ -38,7 +38,11 @@ connector.initCloudantClientSsl(url, username, password, dbName, create, proxyUr
 
 #Initialize the connector, advanced version which time outs. The TimeUnit is a enum, see https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/TimeUnit.html
 
-connector.initCloudantClientAdvanced(url, username, password, dbName, create, connectTimeout, readTimeout, timeUnit);
+connector.initCloudantClientAdvanced(account, username, password, dbName, create, connectTimeout, readTimeout, timeUnit);
+
+#Initialize the connector, advanced version which time outs for a Local Cloudant server. The TimeUnit is a enum, see https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/TimeUnit.html
+
+connector.initCloudantClientLocalAdvanced(url, username, password, dbName, create, connectTimeout, readTimeout, timeUnit);
 
 
 #Check if there is already a connection established.
