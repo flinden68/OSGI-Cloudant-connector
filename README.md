@@ -1,4 +1,4 @@
-# A basic Cloudant connector plugin#
+# A basic Cloudant connector plugin
 A basic cloudant-connector as a OSGi plugin which can be used on top of Domino, to connect to a Cloudant database.
 To establish this connection I have used the open source project, Java Cloudant. https://github.com/cloudant/java-cloudant
 
